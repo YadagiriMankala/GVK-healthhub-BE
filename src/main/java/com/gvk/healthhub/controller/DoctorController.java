@@ -21,6 +21,7 @@ import com.gvk.healthhub.dto.request.DoctorListRequest;
 import com.gvk.healthhub.dto.request.DoctorUpdateRequest;
 import com.gvk.healthhub.dto.response.ApiResponse;
 import com.gvk.healthhub.dto.response.DoctorDTO;
+import com.gvk.healthhub.dto.response.DoctorSlotResponse;
 import com.gvk.healthhub.dto.response.HospitalDTO;
 import com.gvk.healthhub.entity.Hospital;
 import com.gvk.healthhub.repository.HospitalRepository;
@@ -213,13 +214,10 @@ public class DoctorController {
 	 */
 	@GetMapping("/schedulecontrol/getpatientslotsofdoc")
 	@Operation(summary = "Get doctor appointment slots", description = "Retrieve available appointment slots for a doctor")
-	public ResponseEntity<ApiResponse<Object>> getPatientSlotsOfDoc(
+	public ResponseEntity<ApiResponse<DoctorSlotResponse>> getPatientSlotsOfDoc(
 			@Parameter(description = "POC ID") @RequestParam Long pocId,
 			@Parameter(description = "Service ID") @RequestParam Long serviceId,
 			@Parameter(description = "Doctor ID") @RequestParam Long doctorId) {
-		// TODO: Implement slot/availability management when DoctorAvailability entity
-		// is added
-		ApiResponse<Object> response = ApiResponse.success("Slots retrieved successfully", List.of());
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(doctorService.getPatientSlotsOfDoc(pocId, serviceId, doctorId));
 	}
 }
