@@ -8,14 +8,12 @@ import com.gvk.healthhub.entity.Doctor;
 import com.gvk.healthhub.mapper.DoctorMapper;
 import com.gvk.healthhub.mapper.DoctorUpdateMapper;
 import com.gvk.healthhub.repository.DoctorRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,7 +24,8 @@ public class DoctorService {
     private final DoctorUpdateMapper doctorUpdateMapper;
 
     @Autowired
-    public DoctorService(DoctorRepository doctorRepository, DoctorMapper doctorMapper, DoctorUpdateMapper doctorUpdateMapper) {
+    public DoctorService(DoctorRepository doctorRepository,
+                         DoctorMapper doctorMapper, DoctorUpdateMapper doctorUpdateMapper) {
         this.doctorRepository = doctorRepository;
         this.doctorMapper = doctorMapper;
         this.doctorUpdateMapper = doctorUpdateMapper;

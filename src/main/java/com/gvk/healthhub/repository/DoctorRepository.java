@@ -47,4 +47,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     List<Doctor> findFeaturedDoctors();
 
     boolean existsBySlug(String slug);
+
+    @Query("SELECT CONCAT(d.firstName, ' ', d.lastName) FROM Doctor d WHERE d.id = :id")
+    String findDoctorNameById(@Param("id") Long id);
 }
