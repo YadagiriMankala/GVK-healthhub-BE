@@ -3,42 +3,30 @@ package com.gvk.healthhub.service;
 import com.gvk.healthhub.dto.request.DoctorListRequest;
 import com.gvk.healthhub.dto.request.DoctorUpdateRequest;
 import com.gvk.healthhub.dto.response.ApiResponse;
-import com.gvk.healthhub.dto.response.DateSlot;
 import com.gvk.healthhub.dto.response.DoctorDTO;
-import com.gvk.healthhub.dto.response.DoctorSlotResponse;
 import com.gvk.healthhub.entity.Doctor;
-import com.gvk.healthhub.entity.DoctorSlot;
 import com.gvk.healthhub.mapper.DoctorMapper;
 import com.gvk.healthhub.mapper.DoctorUpdateMapper;
 import com.gvk.healthhub.repository.DoctorRepository;
-import com.gvk.healthhub.repository.DoctorSlotRepository;
-import java.time.ZoneId;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 @Service
 @Transactional(readOnly = true)
 public class DoctorService {
 
     private final DoctorRepository doctorRepository;
-    private final DoctorSlotRepository doctorSlotRepository;
     private final DoctorMapper doctorMapper;
     private final DoctorUpdateMapper doctorUpdateMapper;
 
     @Autowired
-    public DoctorService(DoctorRepository doctorRepository, DoctorSlotRepository doctorSlotRepository,
+    public DoctorService(DoctorRepository doctorRepository,
                          DoctorMapper doctorMapper, DoctorUpdateMapper doctorUpdateMapper) {
         this.doctorRepository = doctorRepository;
-        this.doctorSlotRepository = doctorSlotRepository;
         this.doctorMapper = doctorMapper;
         this.doctorUpdateMapper = doctorUpdateMapper;
     }
@@ -137,30 +125,6 @@ public class DoctorService {
         return ApiResponse.success(
                 "Doctors fetched successfully",
                 doctors.map(doctorMapper::toDTO));
-    }
-
-    /**
-     * Get available patient slots for a doctor at a specific hospital/service
-     */
-    public ApiResponse<DoctorSlotResponse> getPatientSlotsOfDoc(Long pocId, Long serviceId, Long doctorId) {
-        try {
-            List<DoctorSlot> slots = doctorSlotRepository.findAvailableSlots(
-                    doctorId, pocId, serviceId, LocalDateTime.now());
-            List<DateSlot> dateSlots = slots.stream()
-                .map(slot->DateSlot.builder()
-                    .time(slot.getSlotTime().atZone(ZoneId.systemDefault())
-                        .toInstant()
-                        .toEpochMilli())
-                    .slotPrice(slot.getSlotPrice().doubleValue())
-                    .vacantSlots(slot.getVacantSlots())
-                        .status(slot.getStatus())
-                        .build()
-                    ).toList();
-
-            return ApiResponse.success("Slots retrieved successfully", new DoctorSlotResponse(dateSlots));
-        } catch (Exception e) {
-            return ApiResponse.error("Failed to retrieve slots: " + e.getMessage());
-        }
     }
 
     /**
