@@ -1,4 +1,4 @@
-# GVK Health Hub Backend - Simple Doctor Listing API
+# GVK Health Hub Backend - Simple Doctor
 
 ## Quick Start Guide
 
